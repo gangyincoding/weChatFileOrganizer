@@ -594,25 +594,37 @@
                     </div>
                 `;
 
-                // 主程序文件检查
-                const mainScriptStatus = checks.main_script.status === 'ok' ? '✅' : '❌';
-                const mainScriptColor = checks.main_script.status === 'ok' ? 'text-green-600' : 'text-red-600';
+                // 程序文件完整性检查
+                const programFilesStatus = checks.program_files.status === 'ok' ? '✅' : '❌';
+                const programFilesColor = checks.program_files.status === 'ok' ? 'text-green-600' : 'text-red-600';
+                const filesList = checks.program_files.files.join(', ');
                 html += `
                     <div class="flex items-center justify-between p-3 bg-white rounded-lg">
                         <div>
-                            <div class="font-semibold text-gray-800">主程序文件</div>
-                            <div class="text-sm text-gray-600">${checks.main_script.path}</div>
+                            <div class="font-semibold text-gray-800">程序文件完整性</div>
+                            <div class="text-sm text-gray-600">检查必需文件: ${filesList}</div>
                         </div>
-                        <div class="${mainScriptColor} text-lg">${mainScriptStatus}</div>
+                        <div class="${programFilesColor} text-lg">${programFilesStatus}</div>
                     </div>
                 `;
+
+                // 如果有缺失文件，显示具体缺失的文件
+                if (checks.program_files.status === 'error' && checks.program_files.missing.length > 0) {
+                    html += `
+                        <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <div class="text-red-800 text-sm">
+                                <strong>缺失文件:</strong> ${checks.program_files.missing.join(', ')}
+                            </div>
+                        </div>
+                    `;
+                }
 
                 html += '</div>';
 
                 // 总体状态
                 const allOk = checks.python_version.status === 'ok' &&
                              checks.tkinter.status === 'ok' &&
-                             checks.main_script.status === 'ok';
+                             checks.program_files.status === 'ok';
 
                 if (allOk) {
                     html += `

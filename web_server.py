@@ -99,9 +99,9 @@ class OrganizerHandler(BaseHTTPRequestHandler):
             "tkinter": {
                 "status": "unknown"
             },
-            "main_script": {
+            "program_files": {
                 "status": "unknown",
-                "path": str(self.project_dir / "gui_organizer.py")
+                "files": ["gui_organizer.py", "file_organizer.py", "start.bat"]
             }
         }
 
@@ -118,12 +118,19 @@ class OrganizerHandler(BaseHTTPRequestHandler):
         except ImportError:
             checks["tkinter"]["status"] = "error"
 
-        # 检查主程序文件
-        main_script_path = self.project_dir / "gui_organizer.py"
-        if main_script_path.exists():
-            checks["main_script"]["status"] = "ok"
+        # 检查程序文件完整性
+        missing_files = []
+        for filename in checks["program_files"]["files"]:
+            file_path = self.project_dir / filename
+            if not file_path.exists():
+                missing_files.append(filename)
+
+        if not missing_files:
+            checks["program_files"]["status"] = "ok"
+            checks["program_files"]["missing"] = []
         else:
-            checks["main_script"]["status"] = "error"
+            checks["program_files"]["status"] = "error"
+            checks["program_files"]["missing"] = missing_files
 
         self.send_json_response(checks)
 
