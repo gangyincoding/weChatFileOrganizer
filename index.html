@@ -27,12 +27,65 @@
             border-color: rgba(99, 102, 241, 0.3);
         }
         .code-block {
-            background: #1e1e2e;
-            color: #e0e0e0;
+            background: linear-gradient(135deg, #f6f8fb 0%, #f1f5f9 100%);
+            color: #374151;
+            border: 1px solid #e5e7eb;
             border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
+            padding: 0.5rem 0.75rem;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
             font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-block;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-block:hover {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .command-box {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin: 0.75rem 0;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .command-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+
+        .command-box::before {
+            content: '>';
+            color: #a5b4fc;
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        .step-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f3f4f6;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            border-color: #e5e7eb;
         }
         .animate-pulse {
             animation: pulse 2s infinite;
@@ -252,105 +305,204 @@
 
                 <!-- Tab Contents -->
                 <div id="content-windows" class="tab-content active">
-                    <div class="space-y-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">1</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">下载并解压项目</h4>
-                                <p class="text-gray-600">从GitHub下载项目文件，解压到任意文件夹</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">2</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">双击启动程序</h4>
-                                <p class="text-gray-600">双击 <code class="code-block">start.bat</code> 文件启动程序</p>
+                    <div class="space-y-4">
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">1</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">下载并解压项目</h4>
+                                    <p class="text-gray-600 mb-3">从GitHub下载项目文件，解压到任意文件夹</p>
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                        <p class="text-sm text-blue-800">
+                                            <strong>推荐：</strong>下载后解压到桌面或常用文件夹，方便后续使用
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">3</span>
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">2</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">双击启动程序</h4>
+                                    <p class="text-gray-600 mb-3">找到项目文件夹，双击启动文件：</p>
+                                    <div class="command-box">
+                                        start.bat
+                                    </div>
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
+                                        <p class="text-sm text-green-800">
+                                            <strong>提示：</strong>程序会自动打开图形界面，无需额外操作
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">选择文件夹并整理</h4>
-                                <p class="text-gray-600">选择微信文件夹和目标文件夹，点击"开始整理"按钮</p>
+                        </div>
+
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">3</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">选择文件夹并整理</h4>
+                                    <p class="text-gray-600 mb-3">在程序界面中选择文件夹，开始整理：</p>
+                                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                                        <p class="text-sm text-purple-800">
+                                            <strong>操作步骤：</strong><br>
+                                            1. 选择微信文件夹<br>
+                                            2. 选择目标文件夹<br>
+                                            3. 点击"开始整理"按钮
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="content-mac" class="tab-content">
-                    <div class="space-y-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">1</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">安装Python环境</h4>
-                                <p class="text-gray-600">确保已安装Python 3.6+版本</p>
+                    <div class="space-y-4">
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">1</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">安装Python环境</h4>
+                                    <p class="text-gray-600 mb-3">确保已安装Python 3.6+版本</p>
+                                    <div class="command-box">
+                                        python --version
+                                    </div>
+                                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-3 mt-3">
+                                        <p class="text-sm text-orange-800">
+                                            <strong>推荐：</strong>使用Homebrew安装：brew install python
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">2</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">启动程序</h4>
-                                <p class="text-gray-600">在终端中运行：<code class="code-block">python gui_organizer.py</code></p>
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">2</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">启动程序</h4>
+                                    <p class="text-gray-600 mb-3">打开终端，进入项目目录，运行程序：</p>
+                                    <div class="command-box">
+                                        python gui_organizer.py
+                                    </div>
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-3">
+                                        <p class="text-sm text-yellow-800">
+                                            <strong>提示：</strong>如遇权限问题，请运行：chmod +x *.py
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">3</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">按界面提示操作</h4>
-                                <p class="text-gray-600">选择文件夹，点击开始整理按钮</p>
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">3</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">按界面提示操作</h4>
+                                    <p class="text-gray-600 mb-3">在图形界面中完成文件整理：</p>
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                                        <p class="text-sm text-green-800">
+                                            <strong>操作步骤：</strong><br>
+                                            1. 选择微信文件夹<br>
+                                            2. 选择目标文件夹<br>
+                                            3. 点击"开始整理"按钮
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="content-linux" class="tab-content">
-                    <div class="space-y-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">1</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">安装依赖</h4>
-                                <p class="text-gray-600">
-                                    Python 3.6+：<code class="code-block">sudo apt-get install python3-tk</code><br>
-                                    其他发行版参考对应包管理器
-                                </p>
+                    <div class="space-y-4">
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">1</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">安装依赖</h4>
+                                    <p class="text-gray-600 mb-3">根据您的Linux发行版安装必要的依赖：</p>
+
+                                    <div class="space-y-3">
+                                        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                                            <p class="text-sm text-red-800 font-semibold mb-2">Ubuntu/Debian:</p>
+                                            <div class="command-box">
+                                                sudo apt-get install python3-tk
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                                            <p class="text-sm text-orange-800 font-semibold mb-2">CentOS/RHEL/Fedora:</p>
+                                            <div class="command-box">
+                                                sudo yum install python3-tkinter
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                            <p class="text-sm text-yellow-800 font-semibold mb-2">Arch Linux:</p>
+                                            <div class="command-box">
+                                                sudo pacman -S tk
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">2</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">启动程序</h4>
-                                <p class="text-gray-600">在终端中运行：<code class="code-block">python3 gui_organizer.py</code></p>
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">2</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">启动程序</h4>
+                                    <p class="text-gray-600 mb-3">在终端中进入项目目录，运行程序：</p>
+                                    <div class="command-box">
+                                        python3 gui_organizer.py
+                                    </div>
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
+                                        <p class="text-sm text-blue-800">
+                                            <strong>提示：</strong>确保文件具有执行权限：chmod +x gui_organizer.py
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                                <span class="text-indigo-600 font-semibold">3</span>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800">按界面提示操作</h4>
-                                <p class="text-gray-600">选择文件夹，点击开始整理按钮</p>
+                        <div class="step-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg flex items-center justify-center">
+                                    <span class="text-white font-bold">3</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 mb-2">按界面提示操作</h4>
+                                    <p class="text-gray-600 mb-3">在图形界面中完成文件整理：</p>
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                                        <p class="text-sm text-green-800">
+                                            <strong>操作步骤：</strong><br>
+                                            1. 选择微信文件夹<br>
+                                            2. 选择目标文件夹<br>
+                                            3. 点击"开始整理"按钮
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
