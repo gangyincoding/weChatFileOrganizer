@@ -724,12 +724,12 @@
                 const pythonStatus = checks.python_version.status === 'ok' ? '✅' : '❌';
                 const pythonColor = checks.python_version.status === 'ok' ? 'text-green-600' : 'text-red-600';
                 html += `
-                    <div class="flex items-center justify-between p-3 bg-white rounded-lg">
-                        <div>
+                    <div class="flex items-start p-3 bg-white rounded-lg">
+                        <div class="${pythonColor} text-lg mr-3 mt-1">${pythonStatus}</div>
+                        <div class="flex-1">
                             <div class="font-semibold text-gray-800">Python版本</div>
                             <div class="text-sm text-gray-600">${checks.python_version.version}</div>
                         </div>
-                        <div class="${pythonColor} text-lg">${pythonStatus}</div>
                     </div>
                 `;
 
@@ -737,12 +737,12 @@
                 const tkinterStatus = checks.tkinter.status === 'ok' ? '✅' : '❌';
                 const tkinterColor = checks.tkinter.status === 'ok' ? 'text-green-600' : 'text-red-600';
                 html += `
-                    <div class="flex items-center justify-between p-3 bg-white rounded-lg">
-                        <div>
+                    <div class="flex items-start p-3 bg-white rounded-lg">
+                        <div class="${tkinterColor} text-lg mr-3 mt-1">${tkinterStatus}</div>
+                        <div class="flex-1">
                             <div class="font-semibold text-gray-800">tkinter图形界面</div>
                             <div class="text-sm text-gray-600">GUI支持库</div>
                         </div>
-                        <div class="${tkinterColor} text-lg">${tkinterStatus}</div>
                     </div>
                 `;
 
@@ -751,12 +751,12 @@
                 const programFilesColor = checks.program_files.status === 'ok' ? 'text-green-600' : 'text-red-600';
                 const filesList = checks.program_files.files.join(', ');
                 html += `
-                    <div class="flex items-center justify-between p-3 bg-white rounded-lg">
-                        <div>
+                    <div class="flex items-start p-3 bg-white rounded-lg">
+                        <div class="${programFilesColor} text-lg mr-3 mt-1">${programFilesStatus}</div>
+                        <div class="flex-1">
                             <div class="font-semibold text-gray-800">程序文件完整性</div>
                             <div class="text-sm text-gray-600">检查必需文件: ${filesList}</div>
                         </div>
-                        <div class="${programFilesColor} text-lg">${programFilesStatus}</div>
                     </div>
                 `;
 
