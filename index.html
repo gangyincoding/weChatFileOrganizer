@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信文件整理器 - 智能文件分类工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        .code-block {
+            background: #1e1e2e;
+            color: #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Header -->
+    <header class="glass-effect sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+                        <i data-feather="folder" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800">微信文件整理器</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">版本 1.0.0</span>
+                    <a href="#download" class="text-gray-600 hover:text-indigo-600 transition">
+                        <i data-feather="github" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="container mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 animate-pulse">
+                智能整理微信文件
+            </h2>
+            <p class="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
+                一键整理微信文件夹，自动按类型分类，让您的文件井井有条
+            </p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="startProgram()" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold hover:shadow-xl transform transition-all duration-300">
+                    <span class="flex items-center">
+                        <i data-feather="play-circle" class="w-5 h-5 mr-2"></i>
+                        启动程序
+                    </span>
+                </button>
+                <button onclick="checkEnvironment()" class="bg-white/20 backdrop-blur text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/30 transition">
+                    <span class="flex items-center">
+                        <i data-feather="check-circle" class="w-5 h-5 mr-2"></i>
+                        检查环境
+                    </span>
+                </button>
+            </div>
+
+            <!-- 状态消息区域 -->
+            <div id="statusMessage" class="mt-6 max-w-2xl mx-auto hidden"></div>
+
+            <!-- 环境检查结果区域 -->
+            <div id="environmentResult" class="mt-6 max-w-4xl mx-auto hidden"></div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16 max-w-4xl mx-auto">
+            <div class="glass-effect rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">7+</div>
+                <div class="text-gray-600">文件类型支持</div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">100%</div>
+                <div class="text-gray-600">安全复制</div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">实时</div>
+                <div class="text-gray-600">进度显示</div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">一键</div>
+                <div class="text-gray-600">完成整理</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="container mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">核心功能</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                功能强大，操作简单，让文件整理变得轻松愉快
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="feature-card glass-effect rounded-xl p-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
+                    <i data-feather="grid" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">智能分类</h3>
+                <p class="text-gray-600 mb-4">自动识别文件类型，支持图片、视频、音频、文档等7大类文件类型</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• 图片：jpg, png, gif, webp等</li>
+                    <li>• 视频：mp4, avi, mov, mkv等</li>
+                    <li>• 音频：mp3, wav, flac, aac等</li>
+                </ul>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card glass-effect rounded-xl p-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center mb-4">
+                    <i data-feather="shield" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">安全复制</h3>
+                <p class="text-gray-600 mb-4">只复制文件，不删除或修改原始文件，完全保护您的数据安全</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• 原文件完全保留</li>
+                    <li>• 自动跳过重复文件</li>
+                    <li>• 错误处理机制完善</li>
+                </ul>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card glass-effect rounded-xl p-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mb-4">
+                    <i data-feather="activity" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">实时进度</h3>
+                <p class="text-gray-600 mb-4">可视化进度条，实时显示整理进度和当前处理的文件</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• 精确百分比显示</li>
+                    <li>• 文件计数统计</li>
+                    <li>• 当前文件名显示</li>
+                </ul>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card glass-effect rounded-xl p-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg flex items-center justify-center mb-4">
+                    <i data-feather="stop-circle" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">随时停止</h3>
+                <p class="text-gray-600 mb-4">可以在整理过程中随时停止，安全退出并显示已处理结果</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• 一键停止操作</li>
+                    <li>• 优雅退出机制</li>
+                    <li>• 状态保持一致</li>
+                </ul>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="feature-card glass-effect rounded-xl p-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center mb-4">
+                    <i data-feather="globe" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">编码支持</h3>
+                <p class="text-gray-600 mb-4">完美支持包含特殊字符的文件名，不会因编码问题崩溃</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• Emoji文件名支持</li>
+                    <li>• 特殊Unicode字符</li>
+                    <li>• 中英文混合路径</li>
+                </ul>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="feature-card glass-effect rounded-xl p-6">
+                <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center mb-4">
+                    <i data-feather="mouse-pointer" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">一键操作</h3>
+                <p class="text-gray-600 mb-4">简化的操作流程，选择文件夹，点击开始，坐等完成</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                    <li>• 图形化界面</li>
+                    <li>• 自动扫描+整理</li>
+                    <li>• 详细日志记录</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Section -->
+    <section class="container mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">使用说明</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                简单三步，即可完成文件整理
+            </p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-effect rounded-2xl p-8">
+                <!-- Tabs -->
+                <div class="flex flex-wrap justify-center mb-8 border-b">
+                    <button onclick="switchTab('windows')" id="tab-windows" class="tab-btn px-6 py-3 font-semibold text-indigo-600 border-b-2 border-indigo-600 mr-2">
+                        Windows
+                    </button>
+                    <button onclick="switchTab('mac')" id="tab-mac" class="tab-btn px-6 py-3 font-semibold text-gray-600 hover:text-indigo-600 mr-2">
+                        macOS
+                    </button>
+                    <button onclick="switchTab('linux')" id="tab-linux" class="tab-btn px-6 py-3 font-semibold text-gray-600 hover:text-indigo-600">
+                        Linux
+                    </button>
+                </div>
+
+                <!-- Tab Contents -->
+                <div id="content-windows" class="tab-content active">
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">1</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">下载并解压项目</h4>
+                                <p class="text-gray-600">从GitHub下载项目文件，解压到任意文件夹</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">2</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">双击启动程序</h4>
+                                <p class="text-gray-600">双击 <code class="code-block">start.bat</code> 文件启动程序</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">3</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">选择文件夹并整理</h4>
+                                <p class="text-gray-600">选择微信文件夹和目标文件夹，点击"开始整理"按钮</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-mac" class="tab-content">
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">1</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">安装Python环境</h4>
+                                <p class="text-gray-600">确保已安装Python 3.6+版本</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">2</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">启动程序</h4>
+                                <p class="text-gray-600">在终端中运行：<code class="code-block">python gui_organizer.py</code></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">3</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">按界面提示操作</h4>
+                                <p class="text-gray-600">选择文件夹，点击开始整理按钮</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-linux" class="tab-content">
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">1</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">安装依赖</h4>
+                                <p class="text-gray-600">
+                                    Python 3.6+：<code class="code-block">sudo apt-get install python3-tk</code><br>
+                                    其他发行版参考对应包管理器
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">2</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">启动程序</h4>
+                                <p class="text-gray-600">在终端中运行：<code class="code-block">python3 gui_organizer.py</code></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <span class="text-indigo-600 font-semibold">3</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">按界面提示操作</h4>
+                                <p class="text-gray-600">选择文件夹，点击开始整理按钮</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Details -->
+    <section class="container mx-auto px-4 py-16">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-effect rounded-2xl p-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">技术细节</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-3">技术栈</h4>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• 核心语言：Python 3.6+</li>
+                            <li>• 图形界面：tkinter</li>
+                            <li>• 文件操作：pathlib, shutil</li>
+                            <li>• 进度显示：threading</li>
+                            <li>• 编码处理：utf-8支持</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-3">安全特性</h4>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• 只读操作：不删除原文件</li>
+                            <li>• 重复检测：自动跳过重复文件</li>
+                            <li>• 错误处理：完善的异常捕获</li>
+                            <li>• 线程安全：多线程处理</li>
+                            <li>• 日志记录：详细操作日志</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 mb-2">文件结构示例</h4>
+                    <pre class="text-sm overflow-x-auto"><code>weChatFileOrganizer/
+├── start.bat                    # 启动脚本
+├── gui_organizer.py             # 图形界面
+├── file_organizer.py            # 核心功能
+├── requirements.txt              # 依赖文件
+└── README.md                   # 使用说明</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="container mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">立即下载</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                免费使用，开源项目，随时下载
+            </p>
+        </div>
+
+        <div class="max-w-md mx-auto glass-effect rounded-2xl p-8 text-center">
+            <div class="flex justify-center space-x-4">
+                <a href="https://github.com/gangyincoding/weChatFileOrganizer/archive/refs/heads/main.zip"
+                   class="btn-primary text-white px-8 py-3 rounded-lg font-semibold hover:shadow-xl transform transition-all duration-300">
+                    <i data-feather="download" class="w-5 h-5 mr-2"></i>
+                    下载源代码
+                </a>
+                <a href="https://github.com/gangyincoding/weChatFileOrganizer"
+                   class="bg-white/20 backdrop-blur text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-white/30 transition border border-indigo-200">
+                    <i data-feather="github" class="w-5 h-5 mr-2"></i>
+                    访问GitHub
+                </a>
+            </div>
+
+            <div class="mt-6 text-sm text-gray-600">
+                <p>系统要求：Windows 10+, macOS 10.14+, 或 Linux</p>
+                <p>Python 3.6 或更高版本</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="glass-effect">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-gray-600">
+                    <p>&copy; 2024 微信文件整理器. 保留所有权利.</p>
+                </div>
+                <div class="flex space-x-6 text-gray-600">
+                    <a href="https://github.com/gangyincoding/weChatFileOrganizer" class="hover:text-indigo-600 transition">
+                        GitHub
+                    </a>
+                    <span>•</span>
+                    <a href="mailto:contact@example.com" class="hover:text-indigo-600 transition">
+                        联系我们
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="startModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">启动程序</h3>
+
+            <div class="space-y-4">
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 class="font-semibold text-blue-800 mb-2">Windows 用户</h4>
+                    <p class="text-blue-700 text-sm">双击项目文件夹中的 <code class="code-block">start.bat</code> 文件</p>
+                </div>
+
+                <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h4 class="font-semibold text-green-800 mb-2">macOS/Linux 用户</h4>
+                    <p class="text-green-700 text-sm">在终端中运行：<code class="code-block">python gui_organizer.py</code></p>
+                </div>
+
+                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <h4 class="font-semibold text-yellow-800 mb-2">遇到问题？</h4>
+                    <p class="text-yellow-700 text-sm">请确保已安装Python 3.6+，并检查文件完整性</p>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition">
+                    取消
+                </button>
+                <button onclick="closeModal()" class="btn-primary text-white px-6 py-2 rounded-lg hover:shadow-lg transition">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Feather Icons
+        feather.replace();
+
+        // 显示状态消息
+        function showMessage(message, type = 'info') {
+            const messageEl = document.getElementById('statusMessage');
+            messageEl.classList.remove('hidden', 'bg-green-100', 'bg-red-100', 'bg-blue-100', 'bg-yellow-100',
+                                     'text-green-800', 'text-red-800', 'text-blue-800', 'text-yellow-800',
+                                     'border-green-200', 'border-red-200', 'border-blue-200', 'border-yellow-200');
+
+            const colors = {
+                success: 'bg-green-100 text-green-800 border-green-200',
+                error: 'bg-red-100 text-red-800 border-red-200',
+                info: 'bg-blue-100 text-blue-800 border-blue-200',
+                warning: 'bg-yellow-100 text-yellow-800 border-yellow-200'
+            };
+
+            messageEl.className = `mt-6 max-w-2xl mx-auto p-4 rounded-lg border ${colors[type]}`;
+            messageEl.innerHTML = message;
+        }
+
+        // 启动程序
+        async function startProgram() {
+            showMessage('正在启动程序，请稍候...', 'info');
+
+            try {
+                const response = await fetch('/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage(`
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>${result.message}</span>
+                        </div>
+                        <p class="mt-2 text-sm">${result.note}</p>
+                    `, 'success');
+                } else {
+                    showMessage(`
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>${result.message}</span>
+                        </div>
+                        <p class="mt-2 text-sm">${result.note}</p>
+                    `, 'error');
+                }
+            } catch (error) {
+                showMessage(`
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>启动失败：无法连接到服务器</span>
+                    </div>
+                    <p class="mt-2 text-sm">请确保Web服务器正在运行</p>
+                `, 'error');
+            }
+        }
+
+        // 检查环境
+        async function checkEnvironment() {
+            showMessage('正在检查运行环境...', 'info');
+
+            try {
+                const response = await fetch('/check');
+                const checks = await response.json();
+
+                let html = '<div class="glass-effect rounded-xl p-6">';
+                html += '<h3 class="text-xl font-semibold text-gray-800 mb-4">环境检查结果</h3>';
+                html += '<div class="space-y-4">';
+
+                // Python版本检查
+                const pythonStatus = checks.python_version.status === 'ok' ? '✅' : '❌';
+                const pythonColor = checks.python_version.status === 'ok' ? 'text-green-600' : 'text-red-600';
+                html += `
+                    <div class="flex items-center justify-between p-3 bg-white rounded-lg">
+                        <div>
+                            <div class="font-semibold text-gray-800">Python版本</div>
+                            <div class="text-sm text-gray-600">${checks.python_version.version}</div>
+                        </div>
+                        <div class="${pythonColor} text-lg">${pythonStatus}</div>
+                    </div>
+                `;
+
+                // tkinter检查
+                const tkinterStatus = checks.tkinter.status === 'ok' ? '✅' : '❌';
+                const tkinterColor = checks.tkinter.status === 'ok' ? 'text-green-600' : 'text-red-600';
+                html += `
+                    <div class="flex items-center justify-between p-3 bg-white rounded-lg">
+                        <div>
+                            <div class="font-semibold text-gray-800">tkinter图形界面</div>
+                            <div class="text-sm text-gray-600">GUI支持库</div>
+                        </div>
+                        <div class="${tkinterColor} text-lg">${tkinterStatus}</div>
+                    </div>
+                `;
+
+                // 主程序文件检查
+                const mainScriptStatus = checks.main_script.status === 'ok' ? '✅' : '❌';
+                const mainScriptColor = checks.main_script.status === 'ok' ? 'text-green-600' : 'text-red-600';
+                html += `
+                    <div class="flex items-center justify-between p-3 bg-white rounded-lg">
+                        <div>
+                            <div class="font-semibold text-gray-800">主程序文件</div>
+                            <div class="text-sm text-gray-600">${checks.main_script.path}</div>
+                        </div>
+                        <div class="${mainScriptColor} text-lg">${mainScriptStatus}</div>
+                    </div>
+                `;
+
+                html += '</div>';
+
+                // 总体状态
+                const allOk = checks.python_version.status === 'ok' &&
+                             checks.tkinter.status === 'ok' &&
+                             checks.main_script.status === 'ok';
+
+                if (allOk) {
+                    html += `
+                        <div class="mt-4 p-3 bg-green-100 border border-green-200 rounded-lg">
+                            <div class="flex items-center text-green-800">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="font-semibold">环境检查通过！可以正常启动程序</span>
+                            </div>
+                        </div>
+                    `;
+                    showMessage('环境检查通过！', 'success');
+                } else {
+                    html += `
+                        <div class="mt-4 p-3 bg-red-100 border border-red-200 rounded-lg">
+                            <div class="flex items-center text-red-800">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="font-semibold">环境检查失败，请解决上述问题后重试</span>
+                            </div>
+                        </div>
+                    `;
+                    showMessage('环境检查失败，请查看详细信息', 'error');
+                }
+
+                html += '</div>';
+
+                document.getElementById('environmentResult').innerHTML = html;
+                document.getElementById('environmentResult').classList.remove('hidden');
+
+            } catch (error) {
+                showMessage('环境检查失败：无法连接到服务器', 'error');
+            }
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                btn.classList.add('text-gray-600');
+            });
+
+            // Show selected tab
+            document.getElementById('content-' + tabName).classList.add('active');
+
+            // Add active class to selected button
+            const activeBtn = document.getElementById('tab-' + tabName);
+            activeBtn.classList.remove('text-gray-600');
+            activeBtn.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+        }
+
+        // Modal functions (保留原有功能但默认不使用)
+        function showModal() {
+            document.getElementById('startModal').classList.remove('hidden');
+            document.getElementById('startModal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('startModal').classList.add('hidden');
+            document.getElementById('startModal').classList.remove('flex');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('startModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 页面加载时自动检查环境
+        window.addEventListener('load', function() {
+            // 延迟1秒后自动检查环境
+            setTimeout(checkEnvironment, 1000);
+        });
+    </script>
+</body>
+</html>
